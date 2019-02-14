@@ -1,0 +1,409 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="HMSbazaModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Bolnica">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ime" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="adresa" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="brTelefon" Type="nvarchar" MaxLength="15" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ItniSlucai">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="idPersonal" Type="int" Nullable="false" />
+          <Property Name="operacionaSala" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="tip" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="vreme" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Operacii">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="idPacient" Type="int" Nullable="false" />
+          <Property Name="idPersonal" Type="int" Nullable="false" />
+          <Property Name="tipNaOperacija" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="vreme" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Pacient">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ime" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="pol" Type="nvarchar" MaxLength="6" Nullable="false" />
+          <Property Name="adresa" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="primen" Type="date" Nullable="false" />
+          <Property Name="alergii" Type="nvarchar" MaxLength="100" />
+          <Property Name="idBolnica" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Personal">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ime" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="brTelefon" Type="nvarchar" MaxLength="15" Nullable="false" />
+          <Property Name="datumNaPriklucuvanje" Type="date" Nullable="false" />
+          <Property Name="obrazovanie" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="sertifikat" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="jazici" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="idBolnica" Type="int" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_ItniSlucai_Personal">
+          <End Role="Personal" Type="Self.Personal" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="ItniSlucai" Type="Self.ItniSlucai" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Personal">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="ItniSlucai">
+              <PropertyRef Name="idPersonal" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Operacii_Pacient">
+          <End Role="Pacient" Type="Self.Pacient" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Operacii" Type="Self.Operacii" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Pacient">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Operacii">
+              <PropertyRef Name="idPacient" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Operacii_Personal">
+          <End Role="Personal" Type="Self.Personal" Multiplicity="1" />
+          <End Role="Operacii" Type="Self.Operacii" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Personal">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Operacii">
+              <PropertyRef Name="idPersonal" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Pacient_Bolnica">
+          <End Role="Bolnica" Type="Self.Bolnica" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Pacient" Type="Self.Pacient" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Bolnica">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Pacient">
+              <PropertyRef Name="idBolnica" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Personal_Bolnica">
+          <End Role="Bolnica" Type="Self.Bolnica" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Personal" Type="Self.Personal" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Bolnica">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Personal">
+              <PropertyRef Name="idBolnica" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="HMSbazaModelStoreContainer">
+          <EntitySet Name="Bolnica" EntityType="Self.Bolnica" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ItniSlucai" EntityType="Self.ItniSlucai" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Operacii" EntityType="Self.Operacii" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Pacient" EntityType="Self.Pacient" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Personal" EntityType="Self.Personal" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_ItniSlucai_Personal" Association="Self.FK_ItniSlucai_Personal">
+            <End Role="Personal" EntitySet="Personal" />
+            <End Role="ItniSlucai" EntitySet="ItniSlucai" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Operacii_Pacient" Association="Self.FK_Operacii_Pacient">
+            <End Role="Pacient" EntitySet="Pacient" />
+            <End Role="Operacii" EntitySet="Operacii" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Operacii_Personal" Association="Self.FK_Operacii_Personal">
+            <End Role="Personal" EntitySet="Personal" />
+            <End Role="Operacii" EntitySet="Operacii" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Pacient_Bolnica" Association="Self.FK_Pacient_Bolnica">
+            <End Role="Bolnica" EntitySet="Bolnica" />
+            <End Role="Pacient" EntitySet="Pacient" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Personal_Bolnica" Association="Self.FK_Personal_Bolnica">
+            <End Role="Bolnica" EntitySet="Bolnica" />
+            <End Role="Personal" EntitySet="Personal" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="HMSbazaModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Bolnica">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ime" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="adresa" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="brTelefon" Type="String" MaxLength="15" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="Pacient" Relationship="Self.FK_Pacient_Bolnica" FromRole="Bolnica" ToRole="Pacient" />
+          <NavigationProperty Name="Personal" Relationship="Self.FK_Personal_Bolnica" FromRole="Bolnica" ToRole="Personal" />
+        </EntityType>
+        <EntityType Name="ItniSlucai">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="idPersonal" Type="Int32" Nullable="false" />
+          <Property Name="operacionaSala" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="tip" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="vreme" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="Personal" Relationship="Self.FK_ItniSlucai_Personal" FromRole="ItniSlucai" ToRole="Personal" />
+        </EntityType>
+        <EntityType Name="Operacii">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="idPacient" Type="Int32" Nullable="false" />
+          <Property Name="idPersonal" Type="Int32" Nullable="false" />
+          <Property Name="tipNaOperacija" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="vreme" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="Pacient" Relationship="Self.FK_Operacii_Pacient" FromRole="Operacii" ToRole="Pacient" />
+          <NavigationProperty Name="Personal" Relationship="Self.FK_Operacii_Personal" FromRole="Operacii" ToRole="Personal" />
+        </EntityType>
+        <EntityType Name="Pacient">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ime" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="pol" Type="String" MaxLength="6" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="adresa" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="primen" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="alergii" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="idBolnica" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Bolnica" Relationship="Self.FK_Pacient_Bolnica" FromRole="Pacient" ToRole="Bolnica" />
+          <NavigationProperty Name="Operacii" Relationship="Self.FK_Operacii_Pacient" FromRole="Pacient" ToRole="Operacii" />
+        </EntityType>
+        <EntityType Name="Personal">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ime" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="brTelefon" Type="String" MaxLength="15" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="datumNaPriklucuvanje" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="obrazovanie" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="sertifikat" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="jazici" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="idBolnica" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Bolnica" Relationship="Self.FK_Personal_Bolnica" FromRole="Personal" ToRole="Bolnica" />
+          <NavigationProperty Name="ItniSlucai" Relationship="Self.FK_ItniSlucai_Personal" FromRole="Personal" ToRole="ItniSlucai" />
+          <NavigationProperty Name="Operacii" Relationship="Self.FK_Operacii_Personal" FromRole="Personal" ToRole="Operacii" />
+        </EntityType>
+        <Association Name="FK_Pacient_Bolnica">
+          <End Role="Bolnica" Type="Self.Bolnica" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Pacient" Type="Self.Pacient" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Bolnica">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Pacient">
+              <PropertyRef Name="idBolnica" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Personal_Bolnica">
+          <End Role="Bolnica" Type="Self.Bolnica" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Personal" Type="Self.Personal" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Bolnica">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Personal">
+              <PropertyRef Name="idBolnica" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ItniSlucai_Personal">
+          <End Role="Personal" Type="Self.Personal" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="ItniSlucai" Type="Self.ItniSlucai" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Personal">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="ItniSlucai">
+              <PropertyRef Name="idPersonal" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Operacii_Pacient">
+          <End Role="Pacient" Type="Self.Pacient" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Operacii" Type="Self.Operacii" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Pacient">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Operacii">
+              <PropertyRef Name="idPacient" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Operacii_Personal">
+          <End Role="Personal" Type="Self.Personal" Multiplicity="1" />
+          <End Role="Operacii" Type="Self.Operacii" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Personal">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Operacii">
+              <PropertyRef Name="idPersonal" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="HMSbazaEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Bolnica" EntityType="Self.Bolnica" />
+          <EntitySet Name="ItniSlucai" EntityType="Self.ItniSlucai" />
+          <EntitySet Name="Operacii" EntityType="Self.Operacii" />
+          <EntitySet Name="Pacient" EntityType="Self.Pacient" />
+          <EntitySet Name="Personal" EntityType="Self.Personal" />
+          <AssociationSet Name="FK_Pacient_Bolnica" Association="Self.FK_Pacient_Bolnica">
+            <End Role="Bolnica" EntitySet="Bolnica" />
+            <End Role="Pacient" EntitySet="Pacient" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Personal_Bolnica" Association="Self.FK_Personal_Bolnica">
+            <End Role="Bolnica" EntitySet="Bolnica" />
+            <End Role="Personal" EntitySet="Personal" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ItniSlucai_Personal" Association="Self.FK_ItniSlucai_Personal">
+            <End Role="Personal" EntitySet="Personal" />
+            <End Role="ItniSlucai" EntitySet="ItniSlucai" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Operacii_Pacient" Association="Self.FK_Operacii_Pacient">
+            <End Role="Pacient" EntitySet="Pacient" />
+            <End Role="Operacii" EntitySet="Operacii" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Operacii_Personal" Association="Self.FK_Operacii_Personal">
+            <End Role="Personal" EntitySet="Personal" />
+            <End Role="Operacii" EntitySet="Operacii" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="HMSbazaModelStoreContainer" CdmEntityContainer="HMSbazaEntities">
+          <EntitySetMapping Name="Bolnica">
+            <EntityTypeMapping TypeName="HMSbazaModel.Bolnica">
+              <MappingFragment StoreEntitySet="Bolnica">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="ime" ColumnName="ime" />
+                <ScalarProperty Name="adresa" ColumnName="adresa" />
+                <ScalarProperty Name="brTelefon" ColumnName="brTelefon" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ItniSlucai">
+            <EntityTypeMapping TypeName="HMSbazaModel.ItniSlucai">
+              <MappingFragment StoreEntitySet="ItniSlucai">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="idPersonal" ColumnName="idPersonal" />
+                <ScalarProperty Name="operacionaSala" ColumnName="operacionaSala" />
+                <ScalarProperty Name="tip" ColumnName="tip" />
+                <ScalarProperty Name="vreme" ColumnName="vreme" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Operacii">
+            <EntityTypeMapping TypeName="HMSbazaModel.Operacii">
+              <MappingFragment StoreEntitySet="Operacii">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="idPacient" ColumnName="idPacient" />
+                <ScalarProperty Name="idPersonal" ColumnName="idPersonal" />
+                <ScalarProperty Name="tipNaOperacija" ColumnName="tipNaOperacija" />
+                <ScalarProperty Name="vreme" ColumnName="vreme" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Pacient">
+            <EntityTypeMapping TypeName="HMSbazaModel.Pacient">
+              <MappingFragment StoreEntitySet="Pacient">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="ime" ColumnName="ime" />
+                <ScalarProperty Name="pol" ColumnName="pol" />
+                <ScalarProperty Name="adresa" ColumnName="adresa" />
+                <ScalarProperty Name="primen" ColumnName="primen" />
+                <ScalarProperty Name="alergii" ColumnName="alergii" />
+                <ScalarProperty Name="idBolnica" ColumnName="idBolnica" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Personal">
+            <EntityTypeMapping TypeName="HMSbazaModel.Personal">
+              <MappingFragment StoreEntitySet="Personal">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="ime" ColumnName="ime" />
+                <ScalarProperty Name="brTelefon" ColumnName="brTelefon" />
+                <ScalarProperty Name="datumNaPriklucuvanje" ColumnName="datumNaPriklucuvanje" />
+                <ScalarProperty Name="obrazovanie" ColumnName="obrazovanie" />
+                <ScalarProperty Name="sertifikat" ColumnName="sertifikat" />
+                <ScalarProperty Name="jazici" ColumnName="jazici" />
+                <ScalarProperty Name="idBolnica" ColumnName="idBolnica" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
